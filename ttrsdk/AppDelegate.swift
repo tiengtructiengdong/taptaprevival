@@ -8,7 +8,6 @@
 import UIKit
 
 @main
-// Remove that key in info.plist
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	

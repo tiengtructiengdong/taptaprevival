@@ -1,10 +1,3 @@
-//
-//  ttrsdkUITests.swift
-//  ttrsdkUITests
-//
-//  Created by Gióng Làng on 18/06/2021.
-//
-
 import XCTest
 
 class ttrsdkUITests: XCTestCase {

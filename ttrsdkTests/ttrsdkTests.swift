@@ -1,10 +1,3 @@
-//
-//  ttrsdkTests.swift
-//  ttrsdkTests
-//
-//  Created by Gióng Làng on 18/06/2021.
-//
-
 import XCTest
 @testable import ttrsdk
 
