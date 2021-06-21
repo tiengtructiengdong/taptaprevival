@@ -24,6 +24,9 @@
 		AE3B402D267CA86E00747FD2 /* ScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B402C267CA86E00747FD2 /* ScreenController.swift */; };
 		AE3B402E267CA86E00747FD2 /* ScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B402C267CA86E00747FD2 /* ScreenController.swift */; };
 		AE3B402F267CA86E00747FD2 /* ScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B402C267CA86E00747FD2 /* ScreenController.swift */; };
+		AE597B3226801E9E00FA53F0 /* MenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE597B3126801E9E00FA53F0 /* MenuCell.xib */; };
+		AE597B3326801E9E00FA53F0 /* MenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE597B3126801E9E00FA53F0 /* MenuCell.xib */; };
+		AE597B3426801E9E00FA53F0 /* MenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE597B3126801E9E00FA53F0 /* MenuCell.xib */; };
 		AE5B6BD6267F0C1600B64021 /* Tap Tap Tutorial.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AE5B6BC7267F0C1600B64021 /* Tap Tap Tutorial.m4a */; };
 		AE5B6BD7267F0C1600B64021 /* DJ 4Mile - Sololuna.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AE5B6BC8267F0C1600B64021 /* DJ 4Mile - Sololuna.m4a */; };
 		AE5B6BD9267F0C1600B64021 /* DJ Tapulous - Tap Tap Tap.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AE5B6BCA267F0C1600B64021 /* DJ Tapulous - Tap Tap Tap.m4a */; };
@@ -85,6 +88,7 @@
 		AE3B400D267C93CC00747FD2 /* HomeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
 		AE3B4025267CA85900747FD2 /* ScreenView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ScreenView.xib; sourceTree = "<group>"; };
 		AE3B402C267CA86E00747FD2 /* ScreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenController.swift; sourceTree = "<group>"; };
+		AE597B3126801E9E00FA53F0 /* MenuCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MenuCell.xib; sourceTree = "<group>"; };
 		AE5B6BC7267F0C1600B64021 /* Tap Tap Tutorial.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Tap Tap Tutorial.m4a"; sourceTree = "<group>"; };
 		AE5B6BC8267F0C1600B64021 /* DJ 4Mile - Sololuna.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DJ 4Mile - Sololuna.m4a"; sourceTree = "<group>"; };
 		AE5B6BCA267F0C1600B64021 /* DJ Tapulous - Tap Tap Tap.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DJ Tapulous - Tap Tap Tap.m4a"; sourceTree = "<group>"; };
@@ -238,6 +242,7 @@
 		AE3B4017267C93FA00747FD2 /* Table */ = {
 			isa = PBXGroup;
 			children = (
+				AE597B3126801E9E00FA53F0 /* MenuCell.xib */,
 			);
 			path = Table;
 			sourceTree = "<group>";
@@ -404,6 +409,7 @@
 				AE5B6BE2267F0C1600B64021 /* DJ Tapulous - Tap Tap Tap (hard).tap in Resources */,
 				AE5B6BDD267F0C1600B64021 /* DJ 4Mile - Sololuna (extreme).tap in Resources */,
 				AE5B6BDC267F0C1600B64021 /* Bunkohead - In My Arms (hard).tap in Resources */,
+				AE597B3226801E9E00FA53F0 /* MenuCell.xib in Resources */,
 				AE3B4026267CA85900747FD2 /* ScreenView.xib in Resources */,
 				AE5B6BD6267F0C1600B64021 /* Tap Tap Tutorial.m4a in Resources */,
 				AE5B6BE3267F0C1600B64021 /* Nick Gallant - Turn Yourself Around (medium).tap in Resources */,
@@ -418,6 +424,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE597B3326801E9E00FA53F0 /* MenuCell.xib in Resources */,
 				AE3B4027267CA85900747FD2 /* ScreenView.xib in Resources */,
 				AE3B400F267C93CC00747FD2 /* HomeView.xib in Resources */,
 			);
@@ -427,6 +434,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE597B3426801E9E00FA53F0 /* MenuCell.xib in Resources */,
 				AE3B4028267CA85900747FD2 /* ScreenView.xib in Resources */,
 				AE3B4010267C93CC00747FD2 /* HomeView.xib in Resources */,
 			);
