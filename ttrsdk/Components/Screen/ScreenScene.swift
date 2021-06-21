@@ -27,6 +27,8 @@ class ScreenScene: SKScene {
 	]
 	
 	let scoreLabel = SKLabelNode()
+	let xLabel = SKLabelNode()
+	let comboLabel = SKLabelNode()
 	
 	var multiplier: Int = 1
 	var score: Int = 0 {
@@ -58,19 +60,21 @@ class ScreenScene: SKScene {
 	}
 	var combo: Int = 0 {
 		didSet {
-			if combo == 0 {
-				let scoreShadow = NSShadow()
-				scoreShadow.shadowOffset = CGSize(width: 5, height: 10)
-				scoreShadow.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-				scoreShadow.shadowBlurRadius = 5
-				
-				let scoreAttr: [NSAttributedString.Key: Any] = [
-					 .foregroundColor: #colorLiteral(red: 1, green: 0.9331807544, blue: 0.5426073789, alpha: 1),
-					 .font: UIFont(name: "HelveticaNeue", size: 45)!,
-					 .shadow: scoreShadow
-				]
-				scoreLabel.attributedText = NSAttributedString(string: "MISS!", attributes: scoreAttr)
-			}
+			let scoreShadow = NSShadow()
+			scoreShadow.shadowOffset = CGSize(width: 5, height: 10)
+			scoreShadow.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			scoreShadow.shadowBlurRadius = 5
+			
+			let scoreAttr: [NSAttributedString.Key: Any] = [
+				 .foregroundColor: #colorLiteral(red: 1, green: 0.9331807544, blue: 0.5426073789, alpha: 1),
+				 .font: UIFont(name: "HelveticaNeue-Medium", size: 24)!,
+				 .shadow: scoreShadow
+			]
+			let numberFormatter = NumberFormatter()
+			numberFormatter.numberStyle = .decimal
+			
+			comboLabel.attributedText = NSAttributedString(string: String(combo), attributes: scoreAttr)
+			xLabel.attributedText = NSAttributedString(string: "\(multiplier)×", attributes: scoreAttr)
 		}
 	}
 	
@@ -131,6 +135,10 @@ class ScreenScene: SKScene {
 		
 		addChild(scoreLabel)
 		scoreLabel.position = point(0.5, 0.11)
+		addChild(xLabel)
+		xLabel.position = point(0.1, 0.1)
+		addChild(comboLabel)
+		comboLabel.position = point(0.9, 0.1)
 		
 		let tapSize = CGSize(width: transPoint(0.25, 0).x, height: -transPoint(0, 0.15).y)
 		tapRect = [
@@ -303,7 +311,7 @@ class ScreenScene: SKScene {
 	private func updateEffect() {
 		fxFrame += 0.25
 		let frame = Int(fxFrame.truncatingRemainder(dividingBy: 3) + 1)
-		if combo >= 50 {
+		if combo < 50 {
 			effect[0].texture = SKTexture(imageNamed: "RedFx\(frame)")
 			effect[1].texture = SKTexture(imageNamed: "GreenFx\(frame)")
 			effect[2].texture = SKTexture(imageNamed: "BlueFx\(frame)")
