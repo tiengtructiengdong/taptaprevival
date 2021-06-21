@@ -3,8 +3,16 @@ import SpriteKit
 import SwifterSwift
 import SwiftCSV
 
+enum TapJudgement: Int {
+	case perfect = 150
+	case good = 75
+	case bad = 50
+	case miss = -30
+}
+
 class ScreenScene: SKScene {
-	let bg = SKSpriteNode(imageNamed: "Scene")
+	var bg = SKSpriteNode(imageNamed: "BG")
+	var revBG = SKSpriteNode(imageNamed: "RevBG")
 	let glow = SKSpriteNode(imageNamed: "Glow")
 	let explosion: [SKSpriteNode] = [
 		SKSpriteNode(imageNamed: "RedFlash"),
@@ -14,7 +22,8 @@ class ScreenScene: SKScene {
 	
 	let scoreLabel = SKLabelNode()
 	
-	var score: Int = 50000 {
+	var multiplier: Int = 1
+	var score: Int = 0 {
 		didSet {
 			let scoreShadow = NSShadow()
 			scoreShadow.shadowOffset = CGSize(width: 5, height: 10)
@@ -29,11 +38,21 @@ class ScreenScene: SKScene {
 			let numberFormatter = NumberFormatter()
 			numberFormatter.numberStyle = .decimal
 			scoreLabel.attributedText = NSAttributedString(string: numberFormatter.string(from: NSNumber(value: score))!, attributes: scoreAttr)
+			
+			if [20,30,40].contains(combo) {
+				multiplier = combo/10
+			}
+			else if combo == 0 {
+				multiplier = 1
+			}
+			else if combo == 50 {
+				multiplier = 8
+			}
 		}
 	}
-	var miss: Bool = false {
+	var combo: Int = 0 {
 		didSet {
-			if miss {
+			if combo == 0 {
 				let scoreShadow = NSShadow()
 				scoreShadow.shadowOffset = CGSize(width: 5, height: 10)
 				scoreShadow.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
@@ -79,21 +98,25 @@ class ScreenScene: SKScene {
 		bg.position = point(0.5, 0.5)
 		bg.scale(to: UIScreen.main.bounds.size)
 		
+		addChild(revBG)
+		revBG.position = point(0.5, 0.5)
+		revBG.scale(to: UIScreen.main.bounds.size)
+		revBG.alpha = 0
+		
 		addChild(glow)
-		glow.position = point(0.5, 0.915)
+		glow.position = point(0.5, 0.92)
 		glow.scale(to: UIScreen.main.bounds.size)
 		glow.blendMode = .screen
 		glow.yScale = xScale
 		
 		addChild(scoreLabel)
-		score = 1200
 		scoreLabel.position = point(0.5, 0.11)
 		
-		let tapSize = CGSize(width: transPoint(0.25, 0).x, height: -transPoint(0, 0.1).y)
+		let tapSize = CGSize(width: transPoint(0.25, 0).x, height: -transPoint(0, 0.15).y)
 		tapRect = [
-			CGRect(origin: transPoint(0.05, -0.85), size: tapSize),
-			CGRect(origin: transPoint(0.375, -0.85), size: tapSize),
-			CGRect(origin: transPoint(0.7, -0.85), size: tapSize),
+			CGRect(origin: transPoint(0.05, -0.8), size: tapSize),
+			CGRect(origin: transPoint(0.375, -0.8), size: tapSize),
+			CGRect(origin: transPoint(0.7, -0.8), size: tapSize),
 			
 			CGRect(origin: transPoint(0, -0), size: CGSize(width: transPoint(1, 0.2).x, height: -transPoint(1, 0.2).y)),
 		]
@@ -101,7 +124,7 @@ class ScreenScene: SKScene {
 		for i in 0...2 {
 			addChild(explosion[i])
 			explosion[i].position = point(0.17 + CGFloat(i)*0.33, 0.88)
-			explosion[i].setScale(1.2)
+			explosion[i].setScale(1.25)
 			explosion[i].blendMode = .screen
 			explosion[i].alpha = 0
 		}
@@ -139,6 +162,7 @@ class ScreenScene: SKScene {
 			let time = CGFloat(startTime.distance(to: currentTime))
 			updateNote(time)
 			updateGlow()
+			setRevenge()
 		} else if isStarted {
 			startTime = currentTime
 		} else {
@@ -164,6 +188,10 @@ class ScreenScene: SKScene {
 		while let currFirst = noteQueue.first, time >= CGFloat(currFirst.startTime + 2.2) {
 			let n = noteQueue.removeFirst()
 			n.sprite.removeFromParent()
+			
+			// MISS!
+			combo = 0
+			score -= 30
 		}
 	}
 	
@@ -191,22 +219,35 @@ class ScreenScene: SKScene {
 	}
 	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		var cont = false
 		for touch in touches {
+			cont = false
+			
 			for i in 0...2 {
 				if tapRect[i].contains(touch.location(in: view)) {
-					glow.alpha = 1
-					explosion[i].alpha = 1
+					let judgement = judge(pos:i, touch:touch)
 					
-					score += 150
-					return
+					if judgement != .miss {
+						glow.alpha = 1
+						explosion[i].alpha = 1
+						combo += 1
+						noteQueue.removeFirst().sprite.removeFromParent()
+					}
+					score += judgement.rawValue * multiplier
+					
+					cont = true
+					break
 				}
 			}
+			if cont {continue}
+			
 			if tapRect[3].contains(touch.location(in: view)) {
 				pause()
 				isPaused = true
-				return
+				cont = true
 			}
 		}
+		if cont {return}
 		score -= 70
 	}
 	
@@ -219,6 +260,49 @@ class ScreenScene: SKScene {
 			if $0.alpha > 0 {
 				$0.alpha -= 0.05
 			}
+		}
+	}
+	
+	private func updateMultiplier() {
+		
+	}
+	
+	private func judge(pos: Int, touch: UITouch)->TapJudgement {
+		if let first = noteQueue.first {
+			let firstPos: Int
+			switch first.type {
+				case .red: firstPos = 0
+				case .green: firstPos = 1
+				case .blue: firstPos = 2
+				default: return .miss
+			}
+			
+			if pos != firstPos {return .miss}
+			
+			let time = abs(touch.timestamp.magnitude - startTime - 2 - Double(first.startTime))
+			if time < 0.08 {
+				return .perfect
+			}
+			else if time < 0.15 {
+				return .good
+			}
+			else if time < 0.22 {
+				return .bad
+			}
+		}
+		return .miss
+	}
+	
+	private func setRevenge() {
+		if combo == 50 {
+			revBG.alpha = 1
+			noteQueue.forEach {$0.setRevenge(true)}
+			note.forEach {$0.setRevenge(true)}
+		}
+		else if combo < 50 && revBG.alpha > 0 {
+			revBG.alpha -= 0.05
+			noteQueue.forEach {$0.setRevenge(false)}
+			note.forEach {$0.setRevenge(false)}
 		}
 	}
 }

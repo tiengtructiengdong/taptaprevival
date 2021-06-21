@@ -10,12 +10,6 @@ enum TapType {
 	case right
 }
 
-enum TapJudgement {
-	case perfect
-	case good
-	case bad
-}
-
 class TapNote {
 	var sprite: SKSpriteNode!
 	var startTime: CGFloat!
@@ -49,6 +43,19 @@ class TapNote {
 				sprite = SKSpriteNode(imageNamed: "Blue")
 			default:
 				break
+		}
+	}
+	
+	func setRevenge(_ revenge: Bool) {
+		if revenge {
+			sprite.texture = SKTexture(imageNamed: "RevRed")
+		} else {
+			switch type {
+				case .red: sprite.texture = SKTexture(imageNamed: "Red")
+				case .green: sprite.texture = SKTexture(imageNamed: "Green")
+				case .blue: sprite.texture = SKTexture(imageNamed: "Blue")
+				default: break
+			}
 		}
 	}
 }
