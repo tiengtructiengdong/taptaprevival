@@ -20,6 +20,12 @@ class ScreenScene: SKScene {
 		SKSpriteNode(imageNamed: "BlueFlash")
 	]
 	
+	let effect: [SKSpriteNode] = [
+		SKSpriteNode(imageNamed: "RedFx1"),
+		SKSpriteNode(imageNamed: "GreenFx1"),
+		SKSpriteNode(imageNamed: "BlueFx1")
+	]
+	
 	let scoreLabel = SKLabelNode()
 	
 	var multiplier: Int = 1
@@ -68,6 +74,18 @@ class ScreenScene: SKScene {
 		}
 	}
 	
+	var lineCombo: [Int] = [0,0,0] {
+		didSet {
+			for i in 0...2 {
+				if lineCombo[i] > 3 {
+					effect[i].alpha = 1
+				} else {
+					effect[i].alpha = 0
+				}
+			}
+		}
+	}
+	
 	var note: [TapNote] = []
 	var noteQueue: [TapNote] = []
 	
@@ -97,10 +115,12 @@ class ScreenScene: SKScene {
 		addChild(bg)
 		bg.position = point(0.5, 0.5)
 		bg.scale(to: UIScreen.main.bounds.size)
+		bg.zPosition = -2
 		
 		addChild(revBG)
 		revBG.position = point(0.5, 0.5)
 		revBG.scale(to: UIScreen.main.bounds.size)
+		revBG.zPosition = -2
 		revBG.alpha = 0
 		
 		addChild(glow)
@@ -127,6 +147,12 @@ class ScreenScene: SKScene {
 			explosion[i].setScale(1.25)
 			explosion[i].blendMode = .screen
 			explosion[i].alpha = 0
+			
+			addChild(effect[i])
+			effect[i].zPosition = -1
+			effect[i].setScale(height*0.79 / 379)
+			effect[i].position = point(0.28 + CGFloat(i)*0.22, 0.55)
+			effect[i].alpha = 0
 		}
 	}
 	
@@ -162,7 +188,8 @@ class ScreenScene: SKScene {
 			let time = CGFloat(startTime.distance(to: currentTime))
 			updateNote(time)
 			updateGlow()
-			setRevenge()
+			updateEffect()
+			updateRevenge()
 		} else if isStarted {
 			startTime = currentTime
 		} else {
@@ -191,6 +218,7 @@ class ScreenScene: SKScene {
 			
 			// MISS!
 			combo = 0
+			lineCombo = [0,0,0]
 			score -= 30
 		}
 	}
@@ -232,6 +260,9 @@ class ScreenScene: SKScene {
 						explosion[i].alpha = 1
 						combo += 1
 						noteQueue.removeFirst().sprite.removeFromParent()
+						lineCombo[i] += 1
+					} else {
+						lineCombo[i] = 0
 					}
 					score += judgement.rawValue * multiplier
 					
@@ -248,7 +279,8 @@ class ScreenScene: SKScene {
 			}
 		}
 		if cont {return}
-		score -= 70
+		lineCombo = [0,0,0]
+		score -= 30
 	}
 	
 	private func updateGlow() {
@@ -265,6 +297,21 @@ class ScreenScene: SKScene {
 	
 	private func updateMultiplier() {
 		
+	}
+	
+	var fxFrame: Float = 0
+	private func updateEffect() {
+		fxFrame += 0.25
+		let frame = Int(fxFrame.truncatingRemainder(dividingBy: 3) + 1)
+		if combo >= 50 {
+			effect[0].texture = SKTexture(imageNamed: "RedFx\(frame)")
+			effect[1].texture = SKTexture(imageNamed: "GreenFx\(frame)")
+			effect[2].texture = SKTexture(imageNamed: "BlueFx\(frame)")
+		} else {
+			effect[0].texture = SKTexture(imageNamed: "RevRedFx\(frame)")
+			effect[1].texture = SKTexture(imageNamed: "RevGreenFx\(frame)")
+			effect[2].texture = SKTexture(imageNamed: "RevBlueFx\(frame)")
+		}
 	}
 	
 	private func judge(pos: Int, touch: UITouch)->TapJudgement {
@@ -293,16 +340,24 @@ class ScreenScene: SKScene {
 		return .miss
 	}
 	
-	private func setRevenge() {
+	private func updateRevenge() {
 		if combo == 50 {
 			revBG.alpha = 1
 			noteQueue.forEach {$0.setRevenge(true)}
 			note.forEach {$0.setRevenge(true)}
+			
+			explosion[0].texture = SKTexture(imageNamed: "RevRedFlash")
+			explosion[1].texture = SKTexture(imageNamed: "RevGreenFlash")
+			explosion[2].texture = SKTexture(imageNamed: "RevBlueFlash")
 		}
 		else if combo < 50 && revBG.alpha > 0 {
 			revBG.alpha -= 0.05
 			noteQueue.forEach {$0.setRevenge(false)}
 			note.forEach {$0.setRevenge(false)}
+			
+			explosion[0].texture = SKTexture(imageNamed: "RedFlash")
+			explosion[1].texture = SKTexture(imageNamed: "GreenFlash")
+			explosion[2].texture = SKTexture(imageNamed: "BlueFlash")
 		}
 	}
 }
